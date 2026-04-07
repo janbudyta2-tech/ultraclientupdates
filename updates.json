@@ -1,0 +1,19 @@
+{
+  "latestVersion": "3.1.1",
+  "files": [
+    {
+      "name": "UltraClient-3.1.1-x64-setup.exe",
+      "url": "UltraClient-3.1.1-x64-setup.exe"
+    }
+  ],
+  "items": [
+    {
+      "id": "ultraclient-3-1-1",
+      "version": "3.1.1",
+      "title": "UltraClient 3.1.1",
+      "notes": "Aktualizacja opublikowana automatycznie.",
+      "downloadUrl": "UltraClient-3.1.1-x64-setup.exe",
+      "publishedAt": "2026-03-22T14:13:19.937Z"
+    }
+  ]
+}
