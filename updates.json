@@ -1,18 +1,18 @@
 {
-  "latestVersion": "3.1.1",
+  "latestVersion": "3.1.2",
   "files": [
     {
-      "name": "UltraClient-3.1.1-x64-setup.exe",
-      "url": "https://github.com/janbudyta2-tech/ultraclientupdates/releases/download/Orginal/UltraClient-3.1.1-x64-setup.exe"
+      "name": "UltraClient-3.1.2-x64-setup.exe",
+      "url": "https://github.com/janbudyta2-tech/ultraclientupdates/releases/download/3.1.2/UltraClient-3.1.2-x64-setup.exe"
     }
   ],
   "items": [
     {
-      "id": "ultraclient-3-1-1",
-      "version": "3.1.1",
-      "title": "UltraClient 3.1.1",
+      "id": "ultraclient-3-1-2",
+      "version": "3.1.2",
+      "title": "UltraClient 3.1.2",
       "notes": "Aktualizacja opublikowana automatycznie.",
-      "downloadUrl": "UltraClient-3.1.1-x64-setup.exe",
+      "downloadUrl": "UltraClient-3.1.2-x64-setup.exe",
       "publishedAt": "2026-03-22T14:13:19.937Z"
     }
   ]
