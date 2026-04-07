@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UltraClient - Aktualizacje EXE</title>
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        background: #0f1728;
+        color: #edf4ff;
+      }
+      .wrap {
+        width: min(920px, 94vw);
+        margin: 20px auto;
+        padding: 16px;
+        border-radius: 14px;
+        border: 1px solid #2d426a;
+        background: #131f34;
+      }
+      h1 {
+        margin: 0;
+      }
+      p {
+        color: #9bb0cf;
+      }
+      .item {
+        margin-top: 10px;
+        border: 1px solid #31486f;
+        border-radius: 10px;
+        padding: 10px;
+        background: #0f1a2e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .name {
+        color: #cfe0ff;
+        word-break: break-all;
+      }
+      .btn {
+        display: inline-block;
+        text-decoration: none;
+        border: 1px solid #3f618f;
+        background: #173056;
+        color: #edf4ff;
+        border-radius: 8px;
+        padding: 8px 12px;
+        white-space: nowrap;
+      }
+      .muted {
+        color: #9bb0cf;
+      }
+      .warn {
+        margin-top: 12px;
+        color: #ffd7a3;
+        border: 1px dashed rgba(255, 180, 100, 0.55);
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: rgba(255, 180, 100, 0.08);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <h1>UltraClient - Pobierz .exe</h1>
+      <p>Folder aktualizacjon: tylko pliki EXE do pobrania.</p>
+      <div id="list"></div>
+    </main>
+
+    <script>
+      const list = document.getElementById('list');
+
+      function toAbsolute(url) {
+        if (!url) return '';
+        if (/^https?:\/\//i.test(url)) return url;
+        try {
+          return new URL(url, location.href).toString();
+        } catch {
+          return url;
+        }
+      }
+
+      function fileNameFromUrl(url) {
+        try {
+          return decodeURIComponent((url || '').split('/').pop() || 'download.exe');
+        } catch {
+          return 'download.exe';
+        }
+      }
+
+      function collectExeLinks(payload) {
+        const links = [];
+        const seen = new Set();
+
+        const pushLink = (rawUrl) => {
+          if (!rawUrl || typeof rawUrl !== 'string') return;
+          if (!/\.exe(\?.*)?$/i.test(rawUrl)) return;
+          const absolute = toAbsolute(rawUrl);
+          const key = absolute.toLowerCase();
+          if (seen.has(key)) return;
+          seen.add(key);
+          links.push({
+            url: absolute,
+            name: fileNameFromUrl(rawUrl),
+          });
+        };
+
+        const files = Array.isArray(payload?.files) ? payload.files : [];
+        for (const file of files) {
+          pushLink(file?.url || file?.downloadUrl || file?.path || file?.name || '');
+        }
+
+        const items = Array.isArray(payload?.items) ? payload.items : [];
+        for (const item of items) {
+          pushLink(item?.downloadUrl || item?.url || item?.file || '');
+        }
+
+        return links;
+      }
+
+      function renderLinks(links) {
+        if (!links.length) {
+          list.innerHTML = '<div class="muted">Brak plikow EXE do pobrania.</div>';
+          return;
+        }
+
+        list.innerHTML = links.map((entry) => `
+          <article class="item">
+            <div class="name">${entry.name}</div>
+            <a class="btn" href="${entry.url}">Pobierz EXE</a>
+          </article>
+        `).join('');
+      }
+
+      async function fetchJson(candidates) {
+        const errors = [];
+        for (const url of candidates) {
+          try {
+            const response = await fetch(url, { cache: 'no-store' });
+            if (!response.ok) {
+              errors.push(`${url} -> HTTP ${response.status}`);
+              continue;
+            }
+            return {
+              url,
+              payload: await response.json(),
+            };
+          } catch (error) {
+            errors.push(`${url} -> ${error.message}`);
+          }
+        }
+
+        throw new Error(errors.join(' | ') || 'Brak odpowiedzi z updates.json');
+      }
+
+      async function load() {
+        try {
+          const { payload } = await fetchJson([
+            './updates.json',
+            '../updates.json',
+            '/updates.json',
+            '/aktualizacjon/updates.json',
+          ]);
+          const links = collectExeLinks(payload);
+          renderLinks(links);
+        } catch (error) {
+          renderLinks([]);
+          const hint = location.protocol === 'file:'
+            ? 'Wykryto file://. Otworz strone przez HTTP/HTTPS (np. Netlify), nie bezposrednio z dysku.'
+            : 'Sprawdz czy updates.json jest opublikowany (w root albo /aktualizacjon/).';
+          list.insertAdjacentHTML('beforeend', `<div class="warn">Blad: ${error.message}<br/>${hint}</div>`);
+        }
+      }
+
+      load();
+    </script>
+  </body>
+</html>
