@@ -1,8 +1,8 @@
-version: 3.1.1
+version: 3.1.2
 files:
-  - url: UltraClient-3.1.1-x64-setup.exe
+  - url: UltraClient-3.1.2-x64-setup.exe
     sha512: k5gw/jO4wqHULTjwyVD1+I6e6zQuYYNV6fyo4i9WtTOWX0ef3ul4w7AcMnRcSEZpOd/7pEMU1aQw0ESrd4d1RQ==
     size: 107322536
-path: UltraClient-3.1.1-x64-setup.exe
+path: UltraClient-3.1.2-x64-setup.exe
 sha512: k5gw/jO4wqHULTjwyVD1+I6e6zQuYYNV6fyo4i9WtTOWX0ef3ul4w7AcMnRcSEZpOd/7pEMU1aQw0ESrd4d1RQ==
 releaseDate: '2026-03-22T14:13:16.237Z'
